@@ -1,0 +1,28 @@
+﻿@model ULibrary.ViewModels.RegisterViewModel
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="~/css/register-view-style.css">
+</head>
+<body>
+<div class="rect1">
+        <img src="~/images/waves.svg" width=100%>
+    <p class="welcome">Добро<br>пожаловать!</p>
+</div>
+
+<div class="rect2">
+        <p class="create-account-text">Создайте аккаунт <img width="50px" src="~/images/magic-book 2.svg"></p>
+    <form class="registration-form" action="/Account/Register" method="POST">
+        <input class="input-form" type="text" id="first_name" name="FirstName" placeholder="Имя" required>
+        <input class="input-form" type="text" id="last_name" name="LastName" placeholder="Фамилия" required>
+        <input class="input-form" type="text" id="username" name="UserName" placeholder="Логин" required>
+        <input class="input-form" type="password" id="password" name="Password" placeholder="Пароль" required>
+        <input class="input-form" type="password" id="repeat_password" name="ConfirmPassword" placeholder="Повторине пароль" required>
+        <input class="registration-button" type="submit" value="ЗАРЕГИСТРИРОВАТЬСЯ">
+    </form>
+</div>
+</body>

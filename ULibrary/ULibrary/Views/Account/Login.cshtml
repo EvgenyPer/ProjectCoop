@@ -1,0 +1,28 @@
+﻿@model ULibrary.ViewModels.LoginViewModel
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserName</title>
+    <link rel="stylesheet" href="~/css/login-view-style.css">
+</head>
+<body>
+<div class="rect1">
+    <img src="~/images/waves.svg" width=100%>
+    <p class="welcome">Добро<br>пожаловать!</p>
+    <p class="not-registered-text">Если у вас еще нет аккаунта,<br>зарегистрируйтесь</p>
+    <img width="50%" src="~/images/arrow.svg">
+    <a class="register-button" asp-controller="Account" asp-action="Register">ЗАРЕГИСТРИРОВАТЬСЯ</a>
+</div>
+
+<div class="rect2">
+        <p class="enter-account-text">Войдите в аккаунт <img width="50px" src="~/images/magic-book 2.svg"></p>
+    <form class="login-form" action="/submit_login" method="POST">
+        <input class="input-form" type="text" id="username" name="username" placeholder="Логин" required>
+        <input class="input-form" type="password" id="password" name="password" placeholder="Пароль" required>
+        <input class="login-button" type="submit" value="АВТОРИЗОВАТЬСЯ">
+    </form>
+</div>
+</body>

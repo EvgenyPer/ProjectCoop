@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULibrary</title>
+    <link rel="stylesheet" href="~/css/main-view-style.css">
+</head>
+<body>
+    <div class="rectangle rect1"></div>
+    <div class="rectangle rect2"></div>
+    <div class="rectangle rect3"></div>
+
+    <!-- Заголовок -->
+    <div class="title">
+        <p class="ulibrary-title">ULibrary  <img src="~/images/magic-book 2.svg" width="80px"></p>
+        <p>Библиотека</p>
+    </div>
+
+    <!-- Контейнер для кнопок -->
+    <div class="buttons">
+        <div class="button-container-title">Жанры:</div>
+        @* <div class="button-container">
+            @foreach (var genre in Model) 
+            {
+                <button class="genre-button">@genre.Name</button>
+            }
+        </div> *@
+        <div class="button-container">
+            @foreach (var genre in Model) 
+            {
+                <button class="genre-button" onclick="location.href='@Url.Action("Genre", "Home", new { id = genre.Id })'">@genre.Name</button>
+            }
+        </div>
+
+    </div>
+    
+    <a class="enter-button" asp-controller="Account" asp-action="Login">ВОЙТИ</a>
+
+    <ul class="characteristics">
+        <ol class="characteristic">Удобный способ забронировать книги<img class="sparkle" src="~/images/sparkle 1.svg" height="18px"></ol>
+        <ol class="characteristic">Просмотр доступных книг<img class="sparkle" src="~/images/sparkle 1.svg" height="18px"></ol>
+        <ol class="characteristic">Продление срока аренды книги<img class="sparkle" src="~/images/sparkle 1.svg" height="18px"></ol>
+        <ol class="characteristic">Просмотр описания и отзывов<img class="sparkle" src="~/images/sparkle 1.svg" height="18px"></ol>
+    </ul>
+
+    <div class="contacts">
+        <ul>
+            <ol class="contact-text">НАШИ КОНТАКТЫ:</ol>
+            <ol class="contact-text">Будем рады видеть вас в  нашей библиотеке!</ol>
+            <ol class="contact-text">г. Москва, ул. Пушкина, д. Колотушкина<br>ПН-ВС с 9:00 до 21:00</ol>
+            <ol class="contact-text">8-800-555-35-35</ol>
+        </ul>
+        <img class="map" src="images/map.svg">
+    </div>
+
+</body>
+</html>

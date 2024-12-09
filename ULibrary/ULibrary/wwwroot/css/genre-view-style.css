@@ -1,0 +1,80 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #EBA58A;
+    height: 10%;
+    padding: 10px;
+    padding-right: 40px;
+}
+
+.to-main-button {
+    background-color: #EBA58A;
+    border: 0;
+}
+
+.book-search {
+    height: 40px;
+    border-radius: 10px;
+    border: 0;
+    width: 300px;
+    padding-left: 20px;
+}
+
+.go-to-profile-button {
+    border-radius: 20px;
+    background-color: white;
+    border: 0;
+    padding: 10px;
+}
+
+body {
+    font-family: 'Jost', sans-serif;
+    margin: 0;
+}
+
+.centered-text {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.book-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 100px;
+    margin-top: 0;
+    background-color: #EBD4D4;
+    border-radius: 20px;
+}
+
+.book-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: black;
+    border-bottom: 1px solid;
+    margin: 20px;
+}
+
+.book-item img {
+    width: 50px; /* Ширина изображения */
+    height: auto; /* Высота изображения будет пропорциональна */
+    margin-right: 10px;
+}
+
+.book-details {
+    flex-grow: 1; /* Занять оставшееся пространство */
+}
+
+.book-button {
+    padding: 5px 10px;
+    background-color: #EBA58A;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.book-button:hover {
+    background-color: #0056b3;
+}

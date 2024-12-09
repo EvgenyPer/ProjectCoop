@@ -1,0 +1,39 @@
+﻿@model ULibrary.Models.Genre
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Name - Genre</title>
+    <link rel="stylesheet" href="~/css/genre-view-style.css">
+</head>
+
+<header>
+    <button class="to-main-button" onclick="location.href='@Url.Action("Index", "Home")'">
+        <img src="~/images/magic-book 2.svg" height="100px">
+    </button>
+    <input class="book-search" type="text" id="username" name="username" placeholder="Поиск книги">
+    <button class="go-to-profile-button">Михаил Зубенко</button>
+</header>
+
+<body>
+<div class="centered-text">
+    <h1>@Model.Name</h1>
+</div>
+
+<ul class="book-list">
+    @foreach (var book in Model.Books)
+    {
+        <li class="book-item">
+            <img src="~/bookimages/@(book.Id).jpg" alt="@book.Name">
+            <div class="book-details">
+                <h2>@book.Name</h2>
+                    <p>Автор: @book.Author.FirstName @book.Author.LastName</p>
+            </div>
+            <button class="book-button">Забронировать</button>
+        </li>
+    }
+</ul>
+</body>
+</html>

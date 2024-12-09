@@ -1,0 +1,72 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #EBA58A;
+    height: 10%;
+    padding: 10px;
+    padding-right: 40px;
+}
+
+.to-main-button {
+    background-color: #EBA58A;
+    border: 0;
+}
+
+.book-search {
+    height: 40px;
+    border-radius: 10px;
+    border: 0;
+    width: 300px;
+    padding-left: 20px;
+}
+
+.go-to-profile-button {
+    border-radius: 20px;
+    background-color: white;
+    border: 0;
+    padding: 10px;
+}
+
+body {
+    margin: 0;
+    font-family: 'Jost', sans-serif
+}
+
+.user-info {
+    padding: 40px;
+}
+
+table {
+    width: 100%; 
+    border-collapse: collapse; 
+    text-align: center;
+    background-color: #EBA58A; 
+    border-radius: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    border-left: 1px solid;
+    border-bottom: 1px solid;
+}
+
+th:first-child {
+    border-left: none;
+}
+
+td {
+    border-left: 1px solid;
+}
+
+td:first-child {
+    border-left: none;
+}
+
+tr:first-child td {
+    border-top: none;
+}
