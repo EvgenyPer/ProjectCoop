@@ -1,0 +1,71 @@
+﻿@model ULibrary.ViewModels.BookViewModel
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Book.Name</title>
+    <link rel="stylesheet" href="~/css/book-view-style.css">
+</head>
+
+<header>
+    <button class="to-main-button" onclick="location.href='@Url.Action("Index", "Home")'">
+        <img src="~/images/magic-book 2.svg" height="100px">
+    </button>
+    <input class="book-search" type="text" id="username" name="username" placeholder="Поиск книги">
+    @if (Model.CurrentUser != null)
+    {
+        <button class="go-to-profile-button" onclick="location.href='@Url.Action("Profile", "Profile")'">@Model.CurrentUser.FirstName @Model.CurrentUser.LastName</button>
+    }
+    else
+    {
+        <a href="@Url.Action("Login", "Account")" class="go-to-profile-button">Войти</a>
+    }
+</header>
+
+<body>
+
+    <button class="button" onclick="window.history.back();">Назад</button>
+    <div class="main-content">
+        <h1>@Model.Book.Name</h1>
+
+        <div class="container">
+            <div class="book-details">
+                <div class="characteristics">
+                    <p><strong>Жанр:</strong> @Model.Book.Genre.Name</p>
+                    <p><strong>Автор:</strong> @Model.Book.Author.FirstName @Model.Book.Author.LastName</p>
+                    <p><strong>Дата публикации:</strong> @Model.Book.ReleaseDate.ToString("yyyy-MM-dd")</p>
+
+                    @if (Model.CurrentUser == null)
+                    {
+                        <p>Войдите для брони</p>
+                    }
+                    else if (Model.CurrentUser!.UserBooks != null && Model.CurrentUser.UserBooks.Any(ub => ub.BookId == Model.Book.Id))
+                    {
+                        <p style="color: red">Уже забронирована</p>
+                    }
+                    else
+                    {
+                        <form asp-action="BookAsync" method="post">
+                            <input type="hidden" name="id" value="@Model.Book.Id" />
+                            <button type="submit" class="button">Забронировать</button>
+                        </form>
+
+                    }
+
+                </div>
+            </div>
+            <div class="book-image">
+                <img src="~/bookimages/@(Model.Book.Id).jpg" alt="Обложка книги">
+            </div>
+        </div>
+
+        <div class="description">
+            <h2>Описание книги</h2>
+            <p>@Model.Book.Description</p>
+        </div>
+    </div>
+
+</body>
+</html>

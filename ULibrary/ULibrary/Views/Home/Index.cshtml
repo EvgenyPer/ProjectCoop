@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model ULibrary.ViewModels.MainViewModel
+
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -20,14 +22,8 @@
     <!-- Контейнер для кнопок -->
     <div class="buttons">
         <div class="button-container-title">Жанры:</div>
-        @* <div class="button-container">
-            @foreach (var genre in Model) 
-            {
-                <button class="genre-button">@genre.Name</button>
-            }
-        </div> *@
         <div class="button-container">
-            @foreach (var genre in Model) 
+            @foreach (var genre in Model.Genres) 
             {
                 <button class="genre-button" onclick="location.href='@Url.Action("Genre", "Home", new { id = genre.Id })'">@genre.Name</button>
             }
@@ -35,7 +31,14 @@
 
     </div>
     
-    <a class="enter-button" asp-controller="Account" asp-action="Login">ВОЙТИ</a>
+    @if (Model.CurrentUser != null)
+    {
+        <button class="enter-button" onclick="location.href='@Url.Action("Profile", "Profile")'">@Model.CurrentUser.FirstName @Model.CurrentUser.LastName</button>
+    }
+    else
+    {
+        <button class="enter-button" onclick="location.href='@Url.Action("Login", "Account")'">ВОЙТИ</button>
+    }
 
     <ul class="characteristics">
         <ol class="characteristic">Удобный способ забронировать книги<img class="sparkle" src="~/images/sparkle 1.svg" height="18px"></ol>

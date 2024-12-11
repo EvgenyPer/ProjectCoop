@@ -8,15 +8,8 @@ namespace ULibrary.Models;
 /// Пользователи.
 /// </summary>
 [Table("users")]
-public class User : IdentityUser
+public class User : IdentityUser<string>
 {
-    /// <summary>
-    /// Id пользователя.
-    /// </summary>
-    [Required]
-    [Column("id")]
-    public int Id { get; set; }
-
     /// <summary>
     /// Логин пользователя.
     /// </summary>
@@ -50,7 +43,7 @@ public class User : IdentityUser
     /// </summary>
     [Required]
     [Column("role_id")]
-    public int RoleId { get; set; }
+    public string RoleId { get; set; }
 
     /// <summary>
     /// Роль пользователя.

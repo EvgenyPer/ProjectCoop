@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ULibrary.Models;
 
 namespace ULibrary.Data;
@@ -6,7 +7,7 @@ namespace ULibrary.Data;
 /// <summary>
 /// Контекст бд библиотеки.
 /// </summary>
-public class ULibraryDbContext : DbContext
+public class ULibraryDbContext : IdentityDbContext<User, Role, string>
 {
     /// <summary>
     /// Конструктор.

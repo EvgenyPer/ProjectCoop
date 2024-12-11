@@ -1,6 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace ULibrary.ViewModels;
+﻿namespace ULibrary.ViewModels;
 public class LoginViewModel
 {
+    /// <summary>
+    /// Логин пользователя.
+    /// </summary>
+    public string UserName { get; set; }
+
+    /// <summary>
+    /// Пароль пользователя.
+    /// </summary>
+    public string Password { get; set; }
 }

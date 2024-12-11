@@ -1,0 +1,54 @@
+﻿@model ULibrary.ViewModels.ProfileViewModel
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="~/css/user-view-style.css">
+
+</head>
+
+<header>
+    <button class="to-main-button" onclick="location.href='@Url.Action("Index", "Home")'">
+        <img src="~/images/magic-book 2.svg" height="100px">
+    </button>
+    <input class="book-search" type="text" id="username" name="username" placeholder="Поиск книги">
+  
+    <button class="go-to-profile-button">@Model.FirstName @Model.LastName</button>
+
+    <a href="@Url.Action("Logout", "Profile")" class="go-to-profile-button">Выйти</a>
+
+</header>
+
+<body>
+    <div class="user-info">
+        <h1>@Model.UserName</h1>
+        <h3>@Model.LastName @Model.FirstName</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Код получения</th>
+                    <th>Дата получения</th>
+                    <th>Описание</th>
+                    <th>Штраф</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Model.UserBooks)
+                {
+                    <tr>
+                        <td>@book.Book.Name</td>
+                        <td>@book.ConfirmationCode</td>
+                        <td>@(book.ReceiptDate != null ? book.ReceiptDate.Value.ToString("yyyy-MM-dd") : "Еще не получена")</td>
+                        <td>@(book.ReturnDate != null ? book.ReturnDate.Value.ToString("yyyy-MM-dd") : "Еще не получена")</td>
+                        <td>@book.Penalty.ToString("C2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>

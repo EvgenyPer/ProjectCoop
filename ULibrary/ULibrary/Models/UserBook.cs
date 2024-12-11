@@ -16,7 +16,7 @@ public class UserBook
     /// </summary>
     [Required]
     [Column("user_id")]
-    public int UserId { get; set; }
+    public string UserId { get; set; }
 
     /// <summary>
     /// Id книги
@@ -31,6 +31,20 @@ public class UserBook
     [Required]
     [Column("confirmation_code")]
     public int ConfirmationCode { get; set; }
+
+    /// <summary>
+    /// Дата получения книги.
+    /// </summary>
+    [Required]
+    [Column("receipt_date")]
+    public DateTime ReceiptDate { get; set; }
+
+    /// <summary>
+    /// Дата получения книги.
+    /// </summary>
+    [Required]
+    [Column("return_date")]
+    public DateTime ReturnDate { get; set; }
 
     /// <summary>
     /// Пользователь заявки.

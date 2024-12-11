@@ -1,11 +1,11 @@
-﻿@model ULibrary.Models.Genre
+﻿@model ULibrary.ViewModels.GenreViewModel
 
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Model.Name - Genre</title>
+    <title>@Model.Genre.Name - Genre</title>
     <link rel="stylesheet" href="~/css/genre-view-style.css">
 </head>
 
@@ -14,16 +14,23 @@
         <img src="~/images/magic-book 2.svg" height="100px">
     </button>
     <input class="book-search" type="text" id="username" name="username" placeholder="Поиск книги">
-    <button class="go-to-profile-button">Михаил Зубенко</button>
+    @if (Model.CurrentUser != null)
+    {
+        <button class="go-to-profile-button" onclick="location.href='@Url.Action("Profile", "Profile")'">@Model.CurrentUser.FirstName @Model.CurrentUser.LastName</button>
+    }
+    else
+    {
+        <a href="@Url.Action("Login", "Account")" class="go-to-profile-button">Войти</a>
+    }
 </header>
 
 <body>
 <div class="centered-text">
-    <h1>@Model.Name</h1>
+    <h1>@Model.Genre.Name</h1>
 </div>
 
 <ul class="book-list">
-    @foreach (var book in Model.Books)
+    @foreach (var book in Model.Genre.Books)
     {
         <li class="book-item">
             <img src="~/bookimages/@(book.Id).jpg" alt="@book.Name">
@@ -31,7 +38,8 @@
                 <h2>@book.Name</h2>
                     <p>Автор: @book.Author.FirstName @book.Author.LastName</p>
             </div>
-            <button class="book-button">Забронировать</button>
+                <button class="book-button" onclick="location.href='@Url.Action("Book", "Book", new { id = book.Id })'">Подробнее</button>
+
         </li>
     }
 </ul>

@@ -39,13 +39,26 @@ public class AccountController : Controller
     /// Обработка входа.
     /// </summary>
     [HttpPost]
-    public IActionResult Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
-        // TODO решить проблему авторизации.
+        if (ModelState.IsValid)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
 
-        // Возврат на страницу юзера.
-        return RedirectToAction("Profile", "Profile");
+            if (result.Succeeded)
+            {
+                // Переносим пользователя на страницу профиля после успешного входа
+                return RedirectToAction("Profile", "Profile");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Некорректный логин или пароль"); // Обработка ошибок
+            }
+        }
+
+        return View(model); // Если ошибка, возвращаем обратно к форме входа
     }
+
 
     /// <summary>
     /// Действие для отображения страницы регистрации.
@@ -62,44 +75,33 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
     {
-        // TODO Решить проблему авторизации.
-        //if (ModelState.IsValid)
-        //{
-            if (model.Password != model.ConfirmPassword)
-            {
-                ModelState.AddModelError("", "Пароли не совпадают!");
-                return View(model);
-            }
-
+        if (ModelState.IsValid)
+        {
             var user = new User
             {
+                Id = _dbContext.Users.Count() + 1.ToString(),
+                UserName = model.UserName,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                UserName = model.UserName,
-                RoleId = 1,
-                Password = model.Password
+                Password = model.Password, // Не забудьте хешировать пароль перед сохранением!
+                RoleId = "1",
             };
 
-            // Используем UserManager для создания пользователя.
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password); // Создаём пользователя
+
             if (result.Succeeded)
             {
-                // Если есть необходимость добавить роли, можно это сделать здесь
-                await _userManager.AddToRoleAsync(user, "User");
-
-                // Авторизация пользователя.
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Profile", "Profile");
+                await _signInManager.SignInAsync(user, isPersistent: false); // Входим в систему после регистрации
+                return RedirectToAction("Profile", "Profile"); // Переход на страницу профиля
             }
 
-            // Получение ошибок.
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError(string.Empty, error.Description); // Если произошла ошибка, добавляем её в модель состояния
             }
-        //}
+        }
 
-        return View(model);
+        return View(model); // Если модель не корректна, возвращаем её для отображения отладочных ошибок
     }
 
 }

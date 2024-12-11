@@ -18,7 +18,7 @@ namespace ULibrary
 
             builder.Services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ULibraryDbContext>()
-                .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+                .AddDefaultTokenProviders();
 
             var app = builder.Build();
 
@@ -52,6 +52,7 @@ namespace ULibrary
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

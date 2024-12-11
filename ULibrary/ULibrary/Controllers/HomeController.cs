@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using ULibrary.Data;
+using ULibrary.Models;
 using ULibrary.ViewModels;
 
 namespace ULibrary.Controllers;
@@ -11,16 +13,16 @@ namespace ULibrary.Controllers;
 /// </summary>
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
     private readonly ULibraryDbContext _dbContext;
+    private readonly UserManager<User> _userManager;
 
     /// <summary>
     /// Конструктор.
     /// </summary>
-    public HomeController(ILogger<HomeController> logger, ULibraryDbContext dbContext)
+    public HomeController(ULibraryDbContext dbContext, UserManager<User> userManager)
     {
-        _logger = logger;
         _dbContext = dbContext;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -28,8 +30,15 @@ public class HomeController : Controller
     /// </summary>
     public async Task<IActionResult> Index()
     {
+        var user = await _userManager.GetUserAsync(User);
         var genres = await _dbContext.Genres.ToListAsync();
-        return View(genres);
+
+        var model = new MainViewModel
+        {
+            CurrentUser = user,
+            Genres = genres
+        };
+        return View(model);
     }
 
     /// <summary>
@@ -62,11 +71,31 @@ public class HomeController : Controller
         if (genre == null)
         {
             // Вернуть 404, если жанр не найден.
-            return NotFound(); 
+            return NotFound();
         }
 
+        var currentUser = await _userManager.GetUserAsync(User);
+        var model = new GenreViewModel
+        {
+            Genre = genre,
+            CurrentUser = currentUser
+        };
+
         // Передать жанр в представление.
-        return View(genre); 
+        return View(model); 
+    }
+
+    public async Task<IActionResult> Profile()
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        if (currentUser == null)
+        {
+            return RedirectToAction("Login");
+        }
+
+        // Здесь вы можете передать модель пользователя в представление
+        return View(currentUser);
     }
 
 }
