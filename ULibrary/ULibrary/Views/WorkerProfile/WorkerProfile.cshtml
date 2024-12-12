@@ -1,0 +1,67 @@
+﻿@model ULibrary.ViewModels.WorkerProrileViewModel
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="~/css/worker-view-style.css">
+
+</head>
+
+<header>
+    <button class="to-main-button" onclick="location.href='@Url.Action("Index", "Home")'">
+        <img src="~/images/magic-book 2.svg" height="100px">
+    </button>
+
+    @* <input class="user-search" type="text" id="username" name="username" placeholder="Поиск пользователя"> *@
+    <form id="searchForm" method="get" action="@Url.Action("WorkerProfile", "WorkerProfile")">
+        <input class="user-search" type="text" name="username" placeholder="Поиск по логину" value="@Model.SearchUserName">
+        <button type="submit" class="search-button">Поиск</button>
+    </form>
+
+    @* <button class="go-to-profile-button">@Model.CurrentUser.FirstName @Model.CurrentUser.LastName</button> *@
+
+    <a href="@Url.Action("Logout", "Profile")" class="go-to-profile-button">Выйти</a>
+
+</header>
+
+<body>
+    <div class="user-info">
+        <h1>@Model.CurrentUser.UserName</h1>
+        <h3>@Model.CurrentUser.LastName @Model.CurrentUser.FirstName</h3>
+        
+        <!-- Поле для ввода ConfirmationCode и кнопка -->
+        <form id="codeSearchForm" method="post" action="@Url.Action("ProcessConfirmationCode", "WorkerProfile")">
+            <input type="text" name="confirmationCode" placeholder="Введите Confirmation Code">
+            <button type="submit">Обработать код</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Логин</th>
+                    <th>Книга</th>
+                    <th>Штраф</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in Model.UsersBooks)
+                {
+                    <tr>
+                        <td>@book.User!.FirstName</td>
+                        <td>@book.User.LastName</td>
+                        <td>@book.User.UserName</td>
+                        <td>@book.Book.Name</td>
+                        <td>@book.Penalty ₽</td>
+                        <td>@book.BookStatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>

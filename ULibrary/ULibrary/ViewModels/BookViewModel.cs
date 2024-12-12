@@ -8,16 +8,18 @@ public class BookViewModel
     /// <summary>
     /// Дата получения книги.
     /// </summary>
-    public DateTime? ReceiptDate { get; set; }
+    public DateTime ReceiptDate { get; set; }
 
     /// <summary>
     /// Дата получения книги.
     /// </summary>
-    public DateTime? ReturnDate { get; set; }
+    public DateTime ReturnDate { get; set; }
 
     public int ConfirmationCode { get; set; }
 
     public decimal Penalty { get; set; }
 
-    public User? CurrentUser { get; set; }
+    public User? User { get; set; }
+
+    public string BookStatus { get; set; }
 }

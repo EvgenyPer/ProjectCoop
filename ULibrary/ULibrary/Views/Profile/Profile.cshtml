@@ -33,7 +33,7 @@
                     <th>Название</th>
                     <th>Код получения</th>
                     <th>Дата получения</th>
-                    <th>Описание</th>
+                    <th>Дата возврата</th>
                     <th>Штраф</th>
                 </tr>
             </thead>
@@ -43,8 +43,8 @@
                     <tr>
                         <td>@book.Book.Name</td>
                         <td>@book.ConfirmationCode</td>
-                        <td>@(book.ReceiptDate != null ? book.ReceiptDate.Value.ToString("yyyy-MM-dd") : "Еще не получена")</td>
-                        <td>@(book.ReturnDate != null ? book.ReturnDate.Value.ToString("yyyy-MM-dd") : "Еще не получена")</td>
+                        <td>@(book.ReceiptDate != default ? book.ReceiptDate.ToString("yyyy-MM-dd") : "Еще не получена")</td>
+                        <td>@(book.ReturnDate != default ? book.ReturnDate.ToString("yyyy-MM-dd") : "Еще не получена")</td>
                         <td>@book.Penalty.ToString("C2")</td>
                     </tr>
                 }

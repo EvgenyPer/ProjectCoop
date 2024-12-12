@@ -6,6 +6,7 @@ using ULibrary.ViewModels;
 using System.Security.Claims;
 using ULibrary.Models;
 using Microsoft.AspNetCore.Identity;
+using ULibrary.Services;
 
 namespace ULibrary.Controllers;
 /// <summary>
@@ -13,7 +14,10 @@ namespace ULibrary.Controllers;
 /// </summary>
 public class BookController : Controller
 {
+    // Контекст бд.
     private readonly ULibraryDbContext _dbContext;
+
+    // Менеджер управления пользователями в приложении.
     private readonly UserManager<User> _userManager;
 
     /// <summary>
@@ -30,6 +34,8 @@ public class BookController : Controller
     /// </summary>
     public async Task<IActionResult> Book(int id)
     {
+        SyncDbService.SyncUsersToAspNetUsersAsync(_dbContext, _userManager).GetAwaiter().GetResult();
+        // Определяем выбранную книгу по ее id.
         var book = await _dbContext.Books
             .Include(b => b.Author)
             .Include(b => b.Genre)
@@ -41,13 +47,18 @@ public class BookController : Controller
             return NotFound();
         }
 
+        // Определяем авторизированного пользователя.
         var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser != null) currentUser.UserBooks = _dbContext.UserBooks.Where(ub => ub.UserId == currentUser.Id).ToList();
 
+        // Если пользователь авторизован.
+        if (currentUser != null)
+            currentUser.UserBooks = _dbContext.UserBooks.Where(ub => ub.UserId == currentUser.Id).ToList();
+
+        // Данные для отображения данных о книге и пользователе на странице книги.
         var model = new BookViewModel
         {
             Book = book,
-            CurrentUser = currentUser
+            User = currentUser
         };
 
         // Передать книгу в представление.
@@ -71,6 +82,9 @@ public class BookController : Controller
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 
+    /// <summary>
+    /// Функция бронирования книги.
+    /// </summary>
     [HttpPost]
     public async Task<IActionResult> BookAsync(int id)
     {
@@ -78,12 +92,12 @@ public class BookController : Controller
 
         if (book == null || book.Count <= 0)
         {
-            // Вернуть ошибку, если книга не найдена или не осталось экземпляров
+            // Вернуть ошибку, если книга не найдена или не осталось экземпляров.
             return NotFound();
         }
 
-        // Получить идентификатор текущего пользователя
-        var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Предполагается, что вы используете Identity
+        // Получить идентификатор текущего пользователя.
+        var userId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (userId == null)
         {
@@ -91,7 +105,7 @@ public class BookController : Controller
             return Unauthorized();
         }
 
-        // Добавить запись о бронировании
+        // Добавить запись о бронировании.
         var userBook = new UserBook
         {
             UserId = userId,
@@ -101,16 +115,16 @@ public class BookController : Controller
             ConfirmationCode = new Random().Next(100000, 999999),
         };
 
+        // Добавление в бд данных о новом бронировании.
         await _dbContext.UserBooks.AddAsync(userBook);
 
-        // Декрементировать количество книг
+        // Декрементировать количество книг.
         book.Count--;
 
         // Сохранить изменения в базе данных
         await _dbContext.SaveChangesAsync();
 
-        // Перенаправить на страницу профиля
+        // Перенаправить на страницу профиля с одноименным контроллером.
         return RedirectToAction("Profile", "Profile");
     }
-
 }

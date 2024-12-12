@@ -3,15 +3,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ULibrary.Data;
 using ULibrary.Models;
+using ULibrary.Services;
 using ULibrary.ViewModels;
 
 namespace ULibrary.Controllers;
+
+/// <summary>
+/// Контроллер страницы пользователя.
+/// </summary>
 public class ProfileController : Controller
 {
+    // Менеджер управления пользователями в приложении.
     private readonly UserManager<User> _userManager;
+
+    // Контекст бд.
     private readonly ULibraryDbContext _dbContext;
+
+    // Менеджер управления процессами входа и выхода пользователей.
     private readonly SignInManager<User> _signInManager;
 
+    /// <summary>
+    /// Конструктор.
+    /// </summary>
     public ProfileController(UserManager<User> userManager, ULibraryDbContext dbContext, SignInManager<User> signInManager)
     {
         _userManager = userManager;
@@ -19,21 +32,30 @@ public class ProfileController : Controller
         _signInManager = signInManager;
     }
 
+    /// <summary>
+    /// Метод загрузки данных для страницы пользователя.
+    /// </summary>
     public async Task<IActionResult> Profile()
     {
-        var userId = _userManager.GetUserId(User); // Получаем Id текущего авторизованного пользователя
+        SyncDbService.SyncUsersToAspNetUsersAsync(_dbContext, _userManager).GetAwaiter().GetResult();
+
+        // Получаем Id текущего авторизованного пользователя.
+        var userId = _userManager.GetUserId(User);
         var user = await _userManager.FindByIdAsync(userId);
         var userBooks = await _dbContext.UserBooks
-            .Include(ub => ub.Book) // Загружаем книги
+            // Загружаем книги.
+            .Include(ub => ub.Book)
             .Where(ub => ub.UserId == userId)
             .ToListAsync();
 
+        // Все данные для вывода на странице.
         var model = new ProfileViewModel
         {
             UserName = user!.UserName,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            UserBooks = userBooks.Select(ub => new BookViewModel // Создайте класс BookViewModel для передачи данных книги
+            // Все брони.
+            UserBooks = userBooks.Select(ub => new BookViewModel
             {
                 ReceiptDate = ub.ReceiptDate,
                 ReturnDate = ub.ReturnDate,
@@ -48,6 +70,9 @@ public class ProfileController : Controller
         return View(model);
     }
 
+    /// <summary>
+    /// Выйти из аккаунта.
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Logout()
     {

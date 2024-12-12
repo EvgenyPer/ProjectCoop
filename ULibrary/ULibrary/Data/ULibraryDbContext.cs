@@ -15,7 +15,7 @@ public class ULibraryDbContext : IdentityDbContext<User, Role, string>
     public ULibraryDbContext(DbContextOptions<ULibraryDbContext> options) : base(options)
     {
     }
-    
+
     /// <summary>
     /// Авторы.
     /// </summary>
@@ -45,4 +45,9 @@ public class ULibraryDbContext : IdentityDbContext<User, Role, string>
     /// Заявки на получение книг пользователями.
     /// </summary>
     public DbSet<UserBook> UserBooks { get; set; }
+
+    public DbSet<SingleUser> SingleUsers { get; set; }
+
+    public DbSet<SingleRole> SingleRoles { get; set; }
+
 }

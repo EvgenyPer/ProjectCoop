@@ -1,20 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ULibrary.Models;
 
-/// <summary>
-/// Пользователи.
-/// </summary>
-public class User : IdentityUser<string>
+[Table("users")]
+[PrimaryKey(nameof(Id))]
+public class SingleUser
 {
+    [Required]
+    [Column("id")]
+    public int Id { get; set; }
+
     /// <summary>
     /// Логин пользователя.
     /// </summary>
     [Required]
     [Column("login")]
-    public override string UserName { get; set; }
+    public string UserName { get; set; }
 
     /// <summary>
     /// Имя пользователя.
@@ -43,15 +46,4 @@ public class User : IdentityUser<string>
     [Required]
     [Column("role_id")]
     public string RoleId { get; set; }
-
-    /// <summary>
-    /// Роль пользователя.
-    /// </summary>
-    [ForeignKey("RoleId")]
-    public virtual Role Role { get; set; }
-
-    /// <summary>
-    /// Заявки пользователя.
-    /// </summary>
-    public virtual List<UserBook> UserBooks { get; set; }
 }

@@ -57,13 +57,13 @@ body {
 }
 
 .book-item img {
-    width: 50px; /* Ширина изображения */
-    height: auto; /* Высота изображения будет пропорциональна */
+    width: 50px;
+    height: auto;
     margin-right: 10px;
 }
 
 .book-details {
-    flex-grow: 1; /* Занять оставшееся пространство */
+    flex-grow: 1;
 }
 
 .book-button {

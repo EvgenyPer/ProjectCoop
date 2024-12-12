@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using ULibrary.Data;
 using ULibrary.Models;
+using ULibrary.Services;
 using ULibrary.ViewModels;
 
 namespace ULibrary.Controllers;
@@ -13,7 +14,10 @@ namespace ULibrary.Controllers;
 /// </summary>
 public class HomeController : Controller
 {
+    // Контекст бд.
     private readonly ULibraryDbContext _dbContext;
+
+    // Менеджер управления пользователями в приложении.
     private readonly UserManager<User> _userManager;
 
     /// <summary>
@@ -30,7 +34,11 @@ public class HomeController : Controller
     /// </summary>
     public async Task<IActionResult> Index()
     {
+        await SyncDbService.SyncUsersToAspNetUsersAsync(_dbContext, _userManager);
+        // Авторизованный пользователь.
         var user = await _userManager.GetUserAsync(User);
+
+        // Загрузка всех жанров из бд.
         var genres = await _dbContext.Genres.ToListAsync();
 
         var model = new MainViewModel
@@ -38,6 +46,8 @@ public class HomeController : Controller
             CurrentUser = user,
             Genres = genres
         };
+
+        // Заходим на главную страницу с авторизованным пользователем (если есть) и жанрами.
         return View(model);
     }
 
@@ -74,6 +84,7 @@ public class HomeController : Controller
             return NotFound();
         }
 
+        // Авторизованный пользователь.
         var currentUser = await _userManager.GetUserAsync(User);
         var model = new GenreViewModel
         {
@@ -85,12 +96,16 @@ public class HomeController : Controller
         return View(model); 
     }
 
+    /// <summary>
+    /// Переход на страницу авторизованного пользователя.
+    /// </summary>
     public async Task<IActionResult> Profile()
     {
         var currentUser = await _userManager.GetUserAsync(User);
 
         if (currentUser == null)
         {
+            // Если юзер не авторизован, переводим на страницу авторизации.
             return RedirectToAction("Login");
         }
 
