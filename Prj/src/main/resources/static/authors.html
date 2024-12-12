@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authors</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #authorFormContainer {
+      display: none;
+      margin-top: 20px;
+      padding-top: 10px;
+    }
+
+    #authorFormContainer input {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>Authors</h1>
+
+<!-- Таблица авторов -->
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="authorTable"></tbody>
+</table>
+
+<!-- Кнопки для добавления и сохранения -->
+<button onclick="showAddAuthorForm()">Add Author</button>
+
+<!-- Форма для добавления/редактирования автора -->
+<div id="authorFormContainer">
+  <h2>Add/Update Author</h2>
+  <form id="authorForm">
+    <input type="hidden" id="authorId">
+    <label>First Name: <input type="text" id="firstName" required></label><br>
+    <label>Last Name: <input type="text" id="lastName" required></label><br>
+    <button type="submit" id="saveButton">Save</button>
+  </form>
+</div>
+
+<script>
+  const apiUrl = '/api/authors';
+  const authorTable = document.getElementById('authorTable');
+  const authorForm = document.getElementById('authorForm');
+  const authorFormContainer = document.getElementById('authorFormContainer');
+  const saveButton = document.getElementById('saveButton');
+
+  // Загружаем авторов
+  function fetchAuthors() {
+    fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+              authorTable.innerHTML = '';
+              data.forEach(author => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+            <td>${author.id}</td>
+            <td>${author.firstName}</td>
+            <td>${author.lastName}</td>
+            <td>
+              <button onclick="editAuthor(${author.id}, '${author.firstName}', '${author.lastName}')">Edit</button>
+              <button onclick="deleteAuthor(${author.id})">Delete</button>
+            </td>
+          `;
+                authorTable.appendChild(row);
+              });
+            });
+  }
+
+  // Показываем форму для добавления нового автора
+  function showAddAuthorForm() {
+    document.getElementById('authorForm').reset();
+    saveButton.textContent = 'Save'; // Кнопка должна быть "Save"
+    document.getElementById('authorId').value = ''; // Сбросить ID
+    authorFormContainer.style.display = 'block';
+  }
+
+  // Обработка отправки формы
+  authorForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const id = document.getElementById('authorId').value;
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+
+    const method = id ? 'PUT' : 'POST';
+    const url = id ? `${apiUrl}/${id}` : apiUrl;
+
+    fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ firstName, lastName }),
+    }).then(() => {
+      authorForm.reset();
+      authorFormContainer.style.display = 'none'; // Скрываем форму после отправки
+      fetchAuthors();
+    });
+  });
+
+  // Заполняем форму для редактирования автора
+  function editAuthor(id, firstName, lastName) {
+    document.getElementById('authorId').value = id;
+    document.getElementById('firstName').value = firstName;
+    document.getElementById('lastName').value = lastName;
+    saveButton.textContent = 'Save Changes'; // Изменяем текст кнопки на "Save Changes"
+    authorFormContainer.style.display = 'block'; // Показываем форму для редактирования
+  }
+
+  // Удаляем автора
+  function deleteAuthor(id) {
+    fetch(`${apiUrl}/${id}`, { method: 'DELETE' })
+            .then(() => fetchAuthors());
+  }
+
+  // Загружаем авторов при загрузке страницы
+  fetchAuthors();
+</script>
+</body>
+</html>

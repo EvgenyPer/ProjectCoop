@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+        }
+
+        button {
+            position: absolute;
+            width: 120px;
+            height: 40px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #btn1 { top: 0; left: 0; }
+        #btn2 { top: 50px; left: 50px; }
+        #btn3 { top: 100px; left: 100px; }
+        #btn4 { top: 150px; left: 150px; }
+        #btn5 { top: 200px; left: 200px; }
+        #btn6 { top: 250px; left: 250px; }
+    </style>
+</head>
+<body>
+<h1>Main Menu</h1>
+<div class="container">
+    <button id="btn1" onclick="navigateTo('authors')">Authors</button>
+    <button id="btn2" onclick="navigateTo('books')">Books</button>
+    <button id="btn3" onclick="navigateTo('genres')">Genres</button>
+    <button id="btn4" onclick="navigateTo('roles')">Roles</button>
+    <button id="btn5" onclick="navigateTo('users')">Users</button>
+    <button id="btn6" onclick="navigateTo('users_books')">Users Books</button>
+</div>
+
+<script>
+    function navigateTo(table) {
+        // Здесь можно заменить URL в зависимости от маршрута таблиц
+        window.location.href = `/${table}.html`;
+    }
+</script>
+</body>
+</html>

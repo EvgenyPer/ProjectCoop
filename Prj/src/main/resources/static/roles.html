@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roles</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            margin: 5px;
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #roleFormContainer {
+            display: none;
+            margin-top: 20px;
+            padding-top: 10px;
+        }
+
+        #roleFormContainer input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>Roles</h1>
+
+<!-- Таблица ролей -->
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="roleTable"></tbody>
+</table>
+
+<!-- Кнопка для добавления роли -->
+<button onclick="showAddRoleForm()">Add Role</button>
+
+<!-- Форма для добавления/редактирования роли -->
+<div id="roleFormContainer">
+    <h2>Add/Update Role</h2>
+    <form id="roleForm">
+        <input type="hidden" id="roleId">
+        <label>Name: <input type="text" id="name" required></label><br>
+        <button type="submit" id="saveButton">Save</button>
+    </form>
+</div>
+
+<script>
+    const apiUrl = '/api/roles';
+    const roleTable = document.getElementById('roleTable');
+    const roleForm = document.getElementById('roleForm');
+    const roleFormContainer = document.getElementById('roleFormContainer');
+    const saveButton = document.getElementById('saveButton');
+
+    // Загружаем роли
+    function fetchRoles() {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                roleTable.innerHTML = '';
+                data.forEach(role => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${role.id}</td>
+                        <td>${role.name}</td>
+                        <td>
+                            <button onclick="editRole(${role.id}, '${role.name}')">Edit</button>
+                            <button onclick="deleteRole(${role.id})">Delete</button>
+                        </td>
+                    `;
+                    roleTable.appendChild(row);
+                });
+            });
+    }
+
+    // Показываем форму для добавления новой роли
+    function showAddRoleForm() {
+        document.getElementById('roleForm').reset();
+        saveButton.textContent = 'Save'; // Кнопка должна быть "Save"
+        document.getElementById('roleId').value = ''; // Сбросить ID
+        roleFormContainer.style.display = 'block';
+    }
+
+    // Обработка отправки формы
+    roleForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const id = document.getElementById('roleId').value;
+        const name = document.getElementById('name').value;
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${apiUrl}/${id}` : apiUrl;
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name }),
+        }).then(() => {
+            roleForm.reset();
+            roleFormContainer.style.display = 'none'; // Скрываем форму после отправки
+            fetchRoles();
+        });
+    });
+
+    // Заполняем форму для редактирования роли
+    function editRole(id, name) {
+        document.getElementById('roleId').value = id;
+        document.getElementById('name').value = name;
+        saveButton.textContent = 'Save Changes'; // Изменяем текст кнопки на "Save Changes"
+        roleFormContainer.style.display = 'block'; // Показываем форму для редактирования
+    }
+
+    // Удаляем роль
+    function deleteRole(id) {
+        fetch(`${apiUrl}/${id}`, { method: 'DELETE' })
+            .then(() => fetchRoles());
+    }
+
+    // Загружаем роли при загрузке страницы
+    fetchRoles();
+</script>
+</body>
+</html>

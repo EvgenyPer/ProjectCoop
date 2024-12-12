@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input {
+            margin: 5px;
+            padding: 5px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<h1>Books</h1>
+<table id="booksTable">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Author ID</th>
+        <th>Release Date</th>
+        <th>Description</th>
+        <th>Penalty</th>
+        <th>Count</th>
+        <th>Genre ID</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Rows will be dynamically populated -->
+    </tbody>
+</table>
+
+<button onclick="showAddBookForm()">Add Book</button>
+<div id="formContainer" style="display: none;">
+    <form id="bookForm">
+        <input type="hidden" id="bookId" />
+        <input type="text" id="name" placeholder="Name" required />
+        <input type="number" id="authorId" placeholder="Author ID" required />
+        <input type="date" id="releaseDate" placeholder="Release Date" required />
+        <textarea id="description" placeholder="Description" required></textarea>
+        <input type="number" id="penalty" placeholder="Penalty" required />
+        <input type="number" id="count" placeholder="Count" required />
+        <input type="number" id="genreId" placeholder="Genre ID" required />
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<script>
+    const apiUrl = '/books'; // Ваш API endpoint
+
+    // Функция для загрузки книг
+    async function loadBooks() {
+        const response = await fetch(apiUrl);
+        const books = await response.json();
+
+        const tableBody = document.getElementById('booksTable').querySelector('tbody');
+        tableBody.innerHTML = '';
+
+        books.forEach(book => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                    <td>${book.id}</td>
+                    <td>${book.name}</td>
+                    <td>${book.author.id}</td>
+                    <td>${book.releaseDate}</td>
+                    <td>${book.description}</td>
+                    <td>${book.penalty}</td>
+                    <td>${book.count}</td>
+                    <td>${book.genreId}</td>
+                    <td>
+                        <button onclick="editBook(${book.id})">Edit</button>
+                        <button onclick="deleteBook(${book.id})">Delete</button>
+                    </td>
+                `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Функция для отображения формы добавления книги
+    function showAddBookForm() {
+        document.getElementById('bookId').value = '';
+        document.getElementById('bookForm').reset();
+        document.getElementById('formContainer').style.display = 'block';
+    }
+
+    // Функция для редактирования книги
+    async function editBook(id) {
+        const response = await fetch(`${apiUrl}/${id}`);
+        const book = await response.json();
+
+        document.getElementById('bookId').value = book.id;
+        document.getElementById('name').value = book.name;
+        document.getElementById('authorId').value = book.author.id;
+        document.getElementById('releaseDate').value = book.releaseDate;
+        document.getElementById('description').value = book.description;
+        document.getElementById('penalty').value = book.penalty;
+        document.getElementById('count').value = book.count;
+        document.getElementById('genreId').value = book.genreId;
+
+        document.getElementById('formContainer').style.display = 'block';
+    }
+
+    // Функция для сохранения книги
+    document.getElementById('bookForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const bookId = document.getElementById('bookId').value;
+        const book = {
+            name: document.getElementById('name').value,
+            author: { id: document.getElementById('authorId').value },
+            releaseDate: document.getElementById('releaseDate').value,
+            description: document.getElementById('description').value,
+            penalty: document.getElementById('penalty').value,
+            count: document.getElementById('count').value,
+            genreId: document.getElementById('genreId').value,
+        };
+
+        const method = bookId ? 'PUT' : 'POST';
+        const url = bookId ? `${apiUrl}/${bookId}` : apiUrl;
+
+        await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(book),
+        });
+
+        document.getElementById('formContainer').style.display = 'none';
+        loadBooks();
+    });
+
+    // Функция для удаления книги
+    async function deleteBook(id) {
+        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        loadBooks();
+    }
+
+    // Загрузка книг при загрузке страницы
+    loadBooks();
+</script>
+</body>
+</html>

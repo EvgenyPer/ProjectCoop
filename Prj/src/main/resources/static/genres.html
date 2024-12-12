@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genres</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #genreFormContainer {
+      display: none;
+      margin-top: 20px;
+      padding-top: 10px;
+    }
+
+    #genreFormContainer input {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>Genres</h1>
+
+<!-- Таблица жанров -->
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="genreTable"></tbody>
+</table>
+
+<!-- Кнопка для добавления жанра -->
+<button onclick="showAddGenreForm()">Add Genre</button>
+
+<!-- Форма для добавления/редактирования жанра -->
+<div id="genreFormContainer">
+  <h2>Add/Update Genre</h2>
+  <form id="genreForm">
+    <input type="hidden" id="genreId">
+    <label>Name: <input type="text" id="name" required></label><br>
+    <button type="submit" id="saveButton">Save</button>
+  </form>
+</div>
+
+<script>
+  const apiUrl = '/api/genres';
+  const genreTable = document.getElementById('genreTable');
+  const genreForm = document.getElementById('genreForm');
+  const genreFormContainer = document.getElementById('genreFormContainer');
+  const saveButton = document.getElementById('saveButton');
+
+  // Загружаем жанры
+  function fetchGenres() {
+    fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+              genreTable.innerHTML = '';
+              data.forEach(genre => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+            <td>${genre.id}</td>
+            <td>${genre.name}</td>
+            <td>
+              <button onclick="editGenre(${genre.id}, '${genre.name}')">Edit</button>
+              <button onclick="deleteGenre(${genre.id})">Delete</button>
+            </td>
+          `;
+                genreTable.appendChild(row);
+              });
+            });
+  }
+
+  // Показываем форму для добавления нового жанра
+  function showAddGenreForm() {
+    document.getElementById('genreForm').reset();
+    saveButton.textContent = 'Save'; // Кнопка должна быть "Save"
+    document.getElementById('genreId').value = ''; // Сбросить ID
+    genreFormContainer.style.display = 'block';
+  }
+
+  // Обработка отправки формы
+  genreForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const id = document.getElementById('genreId').value;
+    const name = document.getElementById('name').value;
+
+    const method = id ? 'PUT' : 'POST';
+    const url = id ? `${apiUrl}/${id}` : apiUrl;
+
+    fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name }),
+    }).then(() => {
+      genreForm.reset();
+      genreFormContainer.style.display = 'none'; // Скрываем форму после отправки
+      fetchGenres();
+    });
+  });
+
+  // Заполняем форму для редактирования жанра
+  function editGenre(id, name) {
+    document.getElementById('genreId').value = id;
+    document.getElementById('name').value = name;
+    saveButton.textContent = 'Save Changes'; // Изменяем текст кнопки на "Save Changes"
+    genreFormContainer.style.display = 'block'; // Показываем форму для редактирования
+  }
+
+  // Удаляем жанр
+  function deleteGenre(id) {
+    fetch(`${apiUrl}/${id}`, { method: 'DELETE' })
+            .then(() => fetchGenres());
+  }
+
+  // Загружаем жанры при загрузке страницы
+  fetchGenres();
+</script>
+</body>
+</html>

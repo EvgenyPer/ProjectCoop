@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input {
+            margin: 5px;
+            padding: 5px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<h1>Users</h1>
+<table id="usersTable">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Login</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Password</th>
+        <th>Role ID</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Rows will be dynamically populated -->
+    </tbody>
+</table>
+
+<button onclick="showAddUserForm()">Add User</button>
+<div id="formContainer" style="display: none;">
+    <form id="userForm">
+        <input type="hidden" id="userId" />
+        <input type="text" id="login" placeholder="Login" required />
+        <input type="text" id="firstName" placeholder="First Name" required />
+        <input type="text" id="lastName" placeholder="Last Name" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <input type="number" id="roleId" placeholder="Role ID" required />
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<script>
+    const apiUrl = '/users';
+
+    async function loadUsers() {
+        const response = await fetch(apiUrl);
+        const users = await response.json();
+
+        const tableBody = document.getElementById('usersTable').querySelector('tbody');
+        tableBody.innerHTML = '';
+
+        users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.login}</td>
+                    <td>${user.firstName}</td>
+                    <td>${user.lastName}</td>
+                    <td>${user.password}</td>
+                    <td>${user.role.id}</td>
+                    <td>
+                        <button onclick="editUser(${user.id})">Edit</button>
+                        <button onclick="deleteUser(${user.id})">Delete</button>
+                    </td>
+                `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function showAddUserForm() {
+        document.getElementById('userId').value = '';
+        document.getElementById('userForm').reset();
+        document.getElementById('formContainer').style.display = 'block';
+    }
+
+    async function editUser(id) {
+        const response = await fetch(`${apiUrl}/${id}`);
+        const user = await response.json();
+
+        document.getElementById('userId').value = user.id;
+        document.getElementById('login').value = user.login;
+        document.getElementById('firstName').value = user.firstName;
+        document.getElementById('lastName').value = user.lastName;
+        document.getElementById('password').value = user.password;
+        document.getElementById('roleId').value = user.role.id;
+
+        document.getElementById('formContainer').style.display = 'block';
+    }
+
+    document.getElementById('userForm').addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const userId = document.getElementById('userId').value;
+        const user = {
+            login: document.getElementById('login').value,
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            password: document.getElementById('password').value,
+            role: { id: document.getElementById('roleId').value },
+        };
+
+        const method = userId ? 'PUT' : 'POST';
+        const url = userId ? `${apiUrl}/${userId}` : apiUrl;
+
+        await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user),
+        });
+
+        document.getElementById('formContainer').style.display = 'none';
+        loadUsers();
+    });
+
+    async function deleteUser(id) {
+        await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
+        loadUsers();
+    }
+
+    loadUsers();
+</script>
+</body>
+</html>
