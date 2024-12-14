@@ -32,6 +32,7 @@ public class BookController : Controller
     /// <summary>
     /// Переход на страницу выбранной книги.
     /// </summary>
+    [HttpGet]
     public async Task<IActionResult> Book(int id)
     {
         SyncDbService.SyncUsersToAspNetUsersAsync(_dbContext, _userManager).GetAwaiter().GetResult();
@@ -68,6 +69,7 @@ public class BookController : Controller
     /// <summary>
     /// Переход на страницу авторизации.
     /// </summary>
+    [HttpGet]
     public IActionResult Login()
     {
         return View();

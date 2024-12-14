@@ -19,7 +19,5 @@ public class ProfileViewModel
     /// </summary>
     public string LastName { get; set; }
 
-    public virtual Role Role { get; set; }
-
     public List<BookViewModel> UserBooks { get; set; }
 }

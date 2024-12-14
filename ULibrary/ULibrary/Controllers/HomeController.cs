@@ -32,6 +32,7 @@ public class HomeController : Controller
     /// <summary>
     /// Вывод главной страницы со всеми жанрами.
     /// </summary>
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         await SyncDbService.SyncUsersToAspNetUsersAsync(_dbContext, _userManager);
@@ -54,6 +55,7 @@ public class HomeController : Controller
     /// <summary>
     /// Переход на страницу авторизации.
     /// </summary>
+    [HttpGet]
     public IActionResult Login()
     {
         return View();
@@ -71,6 +73,7 @@ public class HomeController : Controller
     /// <summary>
     /// Переход на страницу выбранного жанра.
     /// </summary>
+    [HttpGet]
     public async Task<IActionResult> Genre(int id)
     {
         var genre = await _dbContext.Genres
@@ -99,6 +102,7 @@ public class HomeController : Controller
     /// <summary>
     /// Переход на страницу авторизованного пользователя.
     /// </summary>
+    [HttpGet]
     public async Task<IActionResult> Profile()
     {
         var currentUser = await _userManager.GetUserAsync(User);

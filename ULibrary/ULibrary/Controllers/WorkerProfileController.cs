@@ -134,7 +134,6 @@ public class WorkerProfileController : Controller
                                 : ub.Book.Penalty * (DateTime.UtcNow - ub.ReturnDate).Days,
                             ConfirmationCode = ub.ConfirmationCode,
                             BookStatus = "Книга возвращена"
-
                         }).ToListAsync(),
                 };
 

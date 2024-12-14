@@ -35,6 +35,7 @@ public class ProfileController : Controller
     /// <summary>
     /// Метод загрузки данных для страницы пользователя.
     /// </summary>
+    [HttpGet]
     public async Task<IActionResult> Profile()
     {
         SyncDbService.SyncUsersToAspNetUsersAsync(_dbContext, _userManager).GetAwaiter().GetResult();

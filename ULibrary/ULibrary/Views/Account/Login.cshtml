@@ -19,11 +19,6 @@
 
     <div class="rect2">
         <p class="enter-account-text">Войдите в аккаунт <img width="50px" src="~/images/magic-book 2.svg"></p>
-        @* <form class="login-form" action="/submit_login" method="POST">
-        <input class="input-form" type="text" id="username" name="username" placeholder="Логин" required>
-        <input class="input-form" type="password" id="password" name="password" placeholder="Пароль" required>
-        <input class="login-button" type="submit" value="АВТОРИЗОВАТЬСЯ">
-    </form> *@
         <form class="login-form" action="@Url.Action("Login", "Account")" method="POST">
             <input class="input-form" type="text" id="username" name="username" placeholder="Логин" required>
             <input class="input-form" type="password" id="password" name="password" placeholder="Пароль" required>
